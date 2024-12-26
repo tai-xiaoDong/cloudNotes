@@ -10,7 +10,7 @@
       "@/*": ["components/*", "views/*", "store/*"]
     },
     "resolveJsonModule": true,
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": true,
     "noUnusedLocals":false,
     "noUnusedParameters":false,
   }

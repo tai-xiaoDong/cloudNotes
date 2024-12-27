@@ -12,7 +12,7 @@ import 'github-markdown-css/github-markdown.css'
 import { Editor, Viewer } from '@bytemd/vue-next'
 // import zh from 'bytemd/locales/zh_Hans.json';
 
-const value = ref(`dfgfdfgdfhdgfdg`)
+const value = ref(`这是一篇markdown文章`)
 const plugins = [gfm(),highlight()]
 
 // const handleChange = (val: string) => {
@@ -24,7 +24,6 @@ const plugins = [gfm(),highlight()]
 
 <template>
   <div class="editbox" >
-    <!-- <Editor :value="value" :plugins="plugins" @change="handleChange"  :locale="zh"/> -->
     <Viewer :value="value" :plugins="plugins" />
   </div>
 

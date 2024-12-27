@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref , watch} from 'vue'
 import gfm from '@bytemd/plugin-gfm'
 import highlight from '@bytemd/plugin-highlight';
 // import 'highlight.js/styles/monokai-sublime.css'
@@ -12,18 +12,24 @@ import 'github-markdown-css/github-markdown.css'
 import { Editor, Viewer } from '@bytemd/vue-next'
 import zh from 'bytemd/locales/zh_Hans.json';
 
-const value = ref(`dfgfdfgdfhdgfdg`)
+const content = ref('')
 const plugins = [gfm(),highlight()]
-
+const props = defineProps<{
+  id: string
+}>()
 const handleChange = (val: string) => {
-  value.value = val
-  console.log(value.value,'dd')
+  content.value = val
+  console.log(content.value,'dd')
 }
-
+watch(()=>props.id,(newVal)=>{
+  if(newVal){
+    console.log(newVal, typeof props.id, 'Id 变了，重新获取note内容')
+  }
+}, { immediate: true })
 </script>
 
 <template>
-    <Editor :value="value" :plugins="plugins" @change="handleChange"  :locale="zh"  />
+    <Editor :value="content" :plugins="plugins" @change="handleChange"  :locale="zh"  />
 </template>
 
 <style scoped lang="scss">

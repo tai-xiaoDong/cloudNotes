@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     vue(),
     UnoCSS({
-      configFile: '../uno.config.ts',
+      configFile: './unocss.config.ts',
     }),
     svgLoader(),
   ],

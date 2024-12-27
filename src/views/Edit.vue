@@ -1,20 +1,20 @@
 <template>
   <div class="flex">
-    <div v-if="showSidebar">
-      <div class="flex items-center m-r-1 ">
-        <a-button class="m-l-1 m-t-1 m-b-1" @click="toggleSidebar">收起</a-button>
-        <a-button class="m-l-1 m-t-1 m-b-1">
+    <div v-show="showSidebar">
+      <div class="flex items-center m-r-2 ">
+        <a-button class="btn-common" @click="toggleSidebar">收起</a-button>
+        <a-button class="btn-common">
           文件管理器
         </a-button>
-        <a-button class="m-l-1 m-t-1 m-b-1">设置</a-button>
+        <a-button class="btn-common">设置</a-button>
       </div>
       <div class="p-2 min-w-50 b-t">
         <a-tree :show-line="true" :show-icon="true" :tree-data="treeData" @select="onSelect">
           <template #icon="{ dataRef }">
-            <Markdown class="h-4 w-4" v-if="!dataRef.key.includes('Dir')" />
+            <Markdown class="icon-common" v-if="!dataRef.key.includes('Dir')" />
           </template>
           <template #switcherIcon="{ defaultIcon }">
-            <Dir :is="defaultIcon" class="h-4 w-4" />
+            <Dir :is="defaultIcon" class="icon-common" />
           </template>
           <template #title="{ dataRef }">
             <span class="text-center ">
@@ -28,19 +28,23 @@
       <a-tabs v-model:activeKey="activeKey" type="editable-card" @edit="onEdit" hide-add class="p-l-1">
         <a-tab-pane v-for="pane in panes" :key="pane.key" :tab="pane.title" :closable="pane.closable" size="small">
         </a-tab-pane>
+        <template #leftExtra>
+          <a-button v-if="!showSidebar" @click="toggleSidebar" class="m-1">
+              <Icon class="icon-common" />
+            </a-button>
+        </template>
         <template #rightExtra>
           <div class="flex items-center justify-center">
-            <a-button v-if="!showSidebar" @click="toggleSidebar" class="m-1">
-              <Icon class="h-4 w-4" />
-            </a-button>
             <a-switch v-if="activeKey" v-model:checked="ispublic" checked-children="公开" un-checked-children="私密" />
             <a-popover title="点击下载二维码">
               <a-button v-if="ispublic" class="m-1">
                 分享
               </a-button>
               <template #content>
-                <a-qrcode :value="text" @click="dowloadChange" ref="qrcodeCanvasRef"/>
-                <a-input v-model:value="text" placeholder="-" :maxlength="60" />
+                <div class="flex flex-col items-center justify-center">
+                  <a-qrcode :value="text" @click="dowloadChange" ref="qrcodeCanvasRef" class="m-b-1"/>
+                  <a-input v-model:value="text" placeholder="-" :maxlength="60" />
+                </div>
               </template>
             </a-popover>
             <a-button v-if="activeKey" class="m-1">
@@ -117,7 +121,9 @@ const toggleSidebar = () => {
 const removeTab = (targetKey: string) => {
   panes.value = panes.value.filter(pane => pane.key !== targetKey);
   if (panes.value.length === 0) {
+    document.title = 'taixd'
     activeKey.value = null
+    
   }
 };
 
@@ -146,5 +152,8 @@ onMounted(() => {
 
 :deep(.ant-tree-switcher-noop) {
   display: none;
+}
+.btn-common{
+  @apply  m-l-1 m-t-1 m-b-1;
 }
 </style>

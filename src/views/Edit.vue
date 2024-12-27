@@ -1,12 +1,12 @@
 <template>
   <div class="flex">
     <div v-if="showSidebar">
-      <div class="flex items-center m-r-1 p-1.5">
-        <a-button @click="toggleSidebar">收起</a-button>
-        <a-button>
-          <Icon class="h-4 w-4" />
+      <div class="flex items-center m-r-1 ">
+        <a-button class="m-l-1 m-t-1 m-b-1" @click="toggleSidebar">收起</a-button>
+        <a-button class="m-l-1 m-t-1 m-b-1">
+          文件管理器
         </a-button>
-        <a-button></a-button>
+        <a-button class="m-l-1 m-t-1 m-b-1">设置</a-button>
       </div>
       <div class="p-2 min-w-50 b-t">
         <a-tree :show-line="true" :show-icon="true" :tree-data="treeData" @select="onSelect">
@@ -17,7 +17,7 @@
             <Dir :is="defaultIcon" class="h-4 w-4" />
           </template>
           <template #title="{ dataRef }">
-            <span class="text-center">
+            <span class="text-center ">
               {{ dataRef.title.length > 10 ? dataRef.title.slice(0, 10) + '...' : dataRef.title }}
             </span>
           </template>
@@ -29,9 +29,24 @@
         <a-tab-pane v-for="pane in panes" :key="pane.key" :tab="pane.title" :closable="pane.closable" size="small">
         </a-tab-pane>
         <template #rightExtra>
-          <a-button v-if="!showSidebar" @click="toggleSidebar" class="m-1 p-1.5">
-            <Icon class="h-4 w-4" />
-          </a-button>
+          <div class="flex items-center justify-center">
+            <a-button v-if="!showSidebar" @click="toggleSidebar" class="m-1">
+              <Icon class="h-4 w-4" />
+            </a-button>
+            <a-switch v-if="activeKey" v-model:checked="ispublic" checked-children="公开" un-checked-children="私密" />
+            <a-popover title="点击下载二维码">
+              <a-button v-if="ispublic" class="m-1">
+                分享
+              </a-button>
+              <template #content>
+                <a-qrcode :value="text" @click="dowloadChange" ref="qrcodeCanvasRef"/>
+                <a-input v-model:value="text" placeholder="-" :maxlength="60" />
+              </template>
+            </a-popover>
+            <a-button v-if="activeKey" class="m-1">
+              自动保存成功，更新时间：2024-10-09
+            </a-button>
+          </div>
         </template>
       </a-tabs>
       <Editor :id="activeKey" v-show="activeKey" />
@@ -47,7 +62,8 @@ import Dir from '@/assets/icons/dir.svg'
 import { ref, onMounted } from 'vue';
 import type { TreeProps } from 'ant-design-vue';
 // import { message } from 'ant-design-vue';
-
+const text = ref('https://www.antdv.com/');
+const ispublic = ref<boolean>(false)
 const showSidebar = ref<boolean>(true)
 const activeKey = ref<string | null>('');
 const treeData = ref<TreeProps['treeData']>([
@@ -86,6 +102,8 @@ const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
   if (!info.node.children && info.selected && panes.value.find((item) => { return item.key === selectedKeys[0] as string }) === undefined) {
     panes.value.push({ title: info.node.title, content: '', key: selectedKeys[0] as string });
     activeKey.value = selectedKeys[0] as string
+    text.value = `https://www.taixd.cn/view/${selectedKeys[0]}`
+    document.title = info.node.title
   }
 };
 
@@ -105,6 +123,17 @@ const removeTab = (targetKey: string) => {
 
 const onEdit = (targetKey: string | MouseEvent) => {
   removeTab(targetKey as string);
+};
+
+const qrcodeCanvasRef = ref();
+const dowloadChange = async () => {
+  const url = await qrcodeCanvasRef.value.toDataURL();
+  const a = document.createElement('a');
+  a.download = 'QRCode.png';
+  a.href = url;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 };
 onMounted(() => {
 

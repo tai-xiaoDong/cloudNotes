@@ -9,7 +9,7 @@ import highlight from '@bytemd/plugin-highlight';
 import 'highlight.js/styles/monokai-sublime.css'
 // import hljs from 'highlight.js';
 import 'github-markdown-css/github-markdown.css'
-import { Editor, Viewer } from '@bytemd/vue-next'
+import { Viewer } from '@bytemd/vue-next'
 // import zh from 'bytemd/locales/zh_Hans.json';
 
 const value = ref(`这是一篇markdown文章`)
@@ -19,6 +19,16 @@ const plugins = [gfm(),highlight()]
 //   value.value = val
 //   console.log(value.value,'dd')
 // }
+
+// 定义事件
+const emit = defineEmits<{
+  (e: 'title-change', title: string): void
+  (e: 'time-change', time: string): void
+}>()
+
+// 在适当的地方触发事件
+// emit('title-change', newTitle)
+// emit('time-change', updateTime)
 
 </script>
 

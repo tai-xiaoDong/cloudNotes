@@ -7,7 +7,7 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "@/*": ["components/*", "views/*", "store/*"]
+      "@/*": ["src/*", ]
     },
     "resolveJsonModule": true,
     "verbatimModuleSyntax": true,

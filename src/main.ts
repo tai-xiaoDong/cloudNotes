@@ -9,8 +9,5 @@ import 'ant-design-vue/dist/reset.css';
 import 'bytemd/dist/index.css';
 import 'github-markdown-css/github-markdown.css'
 
-
-
 const pinia = createPinia()
-
 createApp(App).use(pinia).use(router).use(Antd).mount('#app')

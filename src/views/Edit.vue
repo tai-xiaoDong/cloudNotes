@@ -42,7 +42,7 @@
               </a-button>
               <template #content>
                 <div class="flex flex-col items-center justify-center">
-                  <a-qrcode :value="text" @click="dowloadChange" ref="qrcodeCanvasRef" class="m-b-1"/>
+                  <a-qrcode :value="text" @click="downloadChange" ref="qrcodeCanvasRef" class="m-b-1"/>
                   <a-input v-model:value="text" placeholder="-" :maxlength="60" />
                 </div>
               </template>
@@ -132,7 +132,7 @@ const onEdit = (targetKey: string | MouseEvent) => {
 };
 
 const qrcodeCanvasRef = ref();
-const dowloadChange = async () => {
+const downloadChange = async () => {
   const url = await qrcodeCanvasRef.value.toDataURL();
   const a = document.createElement('a');
   a.download = 'QRCode.png';

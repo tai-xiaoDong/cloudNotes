@@ -3,7 +3,7 @@
     <div v-show="showSidebar">
       <div class="flex items-center m-r-2 ">
         <a-button class="btn-common" @click="toggleSidebar">收起</a-button>
-        <a-button class="btn-common">
+        <a-button class="btn-common" @click="openFileManager">
           文件管理器
         </a-button>
         <a-button class="btn-common">设置</a-button>
@@ -42,8 +42,8 @@
               </a-button>
               <template #content>
                 <div class="flex flex-col items-center justify-center">
-                  <a-qrcode :value="text" @click="downloadChange" ref="qrcodeCanvasRef" class="m-b-1"/>
-                  <a-input v-model:value="text" placeholder="-" :maxlength="60" />
+                  <a-qrcode :value="QRCode" @click="downloadChange" ref="qrcodeCanvasRef" class="m-b-1"/>
+                  <a-input v-model:value="QRCode" placeholder="-" :maxlength="60" />
                 </div>
               </template>
             </a-popover>
@@ -56,30 +56,35 @@
       <Editor :id="activeKey" v-show="activeKey" />
       <div v-show="!activeKey">请选择一篇文章打开</div>
     </div>
+    <a-modal v-model:open="fileManagerShow"  width="1024px" >
+      <FileManager />
+    </a-modal>
   </div>
 </template>
 <script setup lang="ts">
 import Editor from '@/components/Editor.vue'
+import FileManager from '@/components/FileManager.vue'
 import Icon from '@/assets/icons/library.svg'
 import Markdown from '@/assets/icons/file_markdown.svg'
 import Dir from '@/assets/icons/dir.svg'
 import { ref, onMounted } from 'vue'
-import { useNoteStore }  from '@/store/note'
+import { useNoteStore }  from '@/store/note/index'
 import type { TreeProps } from 'ant-design-vue'
 
-const text = ref('https://www.antdv.com/');
+const QRCode = ref('https://www.antdv.com/');
 const ispublic = ref<boolean>(false)
 const showSidebar = ref<boolean>(true)
-const activeKey = ref<string | null>('');
+const activeKey = ref<string>('');
 const noteStore = useNoteStore()
 const treeData = ref<TreeProps['treeData']>(noteStore.noteTree);
+const fileManagerShow = ref<boolean>(false)
 
 const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
   console.log(selectedKeys[0], info)
   if (!info.node.children && info.selected && panes.value.find((item) => { return item.key === selectedKeys[0] as string }) === undefined) {
     panes.value.push({ title: info.node.title, content: '', key: selectedKeys[0] as string });
     activeKey.value = selectedKeys[0] as string
-    text.value = `https://www.taixd.cn/view/${selectedKeys[0]}`
+    QRCode.value = `https://www.taixd.cn/view/${selectedKeys[0]}`
     document.title = info.node.title
   }
 };
@@ -95,8 +100,7 @@ const removeTab = (targetKey: string) => {
   panes.value = panes.value.filter(pane => pane.key !== targetKey);
   if (panes.value.length === 0) {
     document.title = 'taixd'
-    activeKey.value = null
-    
+    activeKey.value = ''
   }
 };
 
@@ -114,6 +118,9 @@ const downloadChange = async () => {
   a.click();
   document.body.removeChild(a);
 };
+const openFileManager = () =>{
+  fileManagerShow.value = true
+}
 onMounted(() => {
 
 })

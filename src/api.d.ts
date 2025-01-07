@@ -63,6 +63,7 @@ declare  module 'user' {
         gitAddress? : { type : string , address : string }[], // gitee | github | coding
         present : string, // 演示地址
         techStack : string[], // 技术栈
+        ispublic? : boolean,
     }
     export type UpdateProject = {
         id : number | string,
@@ -71,7 +72,6 @@ declare  module 'user' {
         gitAddress? : { type : string , address : string }[], // gitee | github | coding
         present? : string,
         techStack? : string[],
+        ispublic? : boolean,
     }
-
-    
 }

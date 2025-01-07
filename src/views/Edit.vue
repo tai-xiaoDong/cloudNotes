@@ -63,43 +63,16 @@ import Editor from '@/components/Editor.vue'
 import Icon from '@/assets/icons/library.svg'
 import Markdown from '@/assets/icons/file_markdown.svg'
 import Dir from '@/assets/icons/dir.svg'
-import { ref, onMounted } from 'vue';
-import type { TreeProps } from 'ant-design-vue';
-// import { message } from 'ant-design-vue';
+import { ref, onMounted } from 'vue'
+import { useNoteStore }  from '@/store/note'
+import type { TreeProps } from 'ant-design-vue'
+
 const text = ref('https://www.antdv.com/');
 const ispublic = ref<boolean>(false)
 const showSidebar = ref<boolean>(true)
 const activeKey = ref<string | null>('');
-const treeData = ref<TreeProps['treeData']>([
-  {
-    title: '文件夹1',
-    key: 'Dir-0',
-    children: [
-      {
-        title: 'markdown1',
-        key: '0',
-      },
-      {
-        title: 'markdown2',
-        key: '1',
-      },
-      {
-        title: 'markdown3',
-        key: '2',
-      },
-    ],
-  },
-  {
-    title: '文件夹2',
-    key: 'Dir-1',
-    children: [
-      {
-        title: 'markdown4',
-        key: '4',
-      },
-    ],
-  },
-]);
+const noteStore = useNoteStore()
+const treeData = ref<TreeProps['treeData']>(noteStore.noteTree);
 
 const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
   console.log(selectedKeys[0], info)
@@ -144,7 +117,9 @@ const downloadChange = async () => {
 onMounted(() => {
 
 })
+
 </script>
+
 <style scoped lang="scss">
 :deep(.ant-tree-switcher-line-icon) {
   display: none;

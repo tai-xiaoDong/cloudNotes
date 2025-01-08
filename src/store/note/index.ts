@@ -8,6 +8,7 @@ type LibTree = {
 };
 
 export const useNoteStore = defineStore("noteStrore", () => {
+  const markdownId = '';
   const noteTree: LibTree[] = [
     {
       title: "文件夹1",
@@ -44,6 +45,7 @@ export const useNoteStore = defineStore("noteStrore", () => {
   };
   return {
     noteTree,
+    markdownId,
     getNoteTree,
   };
 });

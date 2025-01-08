@@ -39,7 +39,11 @@ const themes = {
 }
 export default defineConfig({
   shortcuts: [
-    ['icon-common', 'h-4 w-4'],
+    {
+      'icon-common' : 'h-4 w-4',
+      'flex-col-center':'flex flex-col flex-justify-center flex-items-center',
+    },
+    // ['flex-col-center', 'flex flex-col flex-justify-center flex-items-center']
   ],
   theme: {
     colors: {

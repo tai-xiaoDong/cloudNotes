@@ -3,13 +3,13 @@
     <div v-show="showSidebar">
       <div class="flex items-center m-r-2 ">
         <a-button class="btn-common" @click="toggleSidebar">收起</a-button>
-        <a-button class="btn-common">
+        <a-button class="btn-common" @click="openFileManager">
           文件管理器
         </a-button>
         <a-button class="btn-common">设置</a-button>
       </div>
       <div class="p-2 min-w-50 b-t">
-        <a-tree :show-line="true" :show-icon="true" :tree-data="treeData" @select="onSelect">
+        <a-tree :show-line="true" :show-icon="true" :tree-data="treeData" @select="onSelect" ref="treeRef">
           <template #icon="{ dataRef }">
             <Markdown class="icon-common" v-if="!dataRef.key.includes('Dir')" />
           </template>
@@ -30,8 +30,8 @@
         </a-tab-pane>
         <template #leftExtra>
           <a-button v-if="!showSidebar" @click="toggleSidebar" class="m-1">
-              <Icon class="icon-common" />
-            </a-button>
+            <Icon class="icon-common" />
+          </a-button>
         </template>
         <template #rightExtra>
           <div class="flex items-center justify-center">
@@ -42,8 +42,8 @@
               </a-button>
               <template #content>
                 <div class="flex flex-col items-center justify-center">
-                  <a-qrcode :value="text" @click="downloadChange" ref="qrcodeCanvasRef" class="m-b-1"/>
-                  <a-input v-model:value="text" placeholder="-" :maxlength="60" />
+                  <a-qrcode :value="QRCode" @click="downloadChange" ref="qrcodeCanvasRef" class="m-b-1" />
+                  <a-input v-model:value="QRCode" placeholder="-" :maxlength="60" />
                 </div>
               </template>
             </a-popover>
@@ -56,57 +56,37 @@
       <Editor :id="activeKey" v-show="activeKey" />
       <div v-show="!activeKey">请选择一篇文章打开</div>
     </div>
+    <a-modal v-model:open="fileManagerShow" width="1024px">
+      <FileManager />
+    </a-modal>
   </div>
 </template>
 <script setup lang="ts">
 import Editor from '@/components/Editor.vue'
+import FileManager from '@/components/FileManager/index.vue'
 import Icon from '@/assets/icons/library.svg'
 import Markdown from '@/assets/icons/file_markdown.svg'
 import Dir from '@/assets/icons/dir.svg'
-import { ref, onMounted } from 'vue';
-import type { TreeProps } from 'ant-design-vue';
-// import { message } from 'ant-design-vue';
-const text = ref('https://www.antdv.com/');
+import { ref, onMounted, watch } from 'vue'
+import { useNoteStore } from '@/store/note/index'
+import type { TreeProps } from 'ant-design-vue'
+import { message } from 'ant-design-vue'
+
+const QRCode = ref('https://www.antdv.com/');
 const ispublic = ref<boolean>(false)
 const showSidebar = ref<boolean>(true)
-const activeKey = ref<string | null>('');
-const treeData = ref<TreeProps['treeData']>([
-  {
-    title: '文件夹1',
-    key: 'Dir-0',
-    children: [
-      {
-        title: 'markdown1',
-        key: '0',
-      },
-      {
-        title: 'markdown2',
-        key: '1',
-      },
-      {
-        title: 'markdown3',
-        key: '2',
-      },
-    ],
-  },
-  {
-    title: '文件夹2',
-    key: 'Dir-1',
-    children: [
-      {
-        title: 'markdown4',
-        key: '4',
-      },
-    ],
-  },
-]);
+const noteStore = useNoteStore()
+const treeData = ref<TreeProps['treeData']>(noteStore.noteTree);
+const activeKey = ref<string>('');
+const fileManagerShow = ref<boolean>(false)
+const treeRef = ref();
 
 const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
   console.log(selectedKeys[0], info)
   if (!info.node.children && info.selected && panes.value.find((item) => { return item.key === selectedKeys[0] as string }) === undefined) {
-    panes.value.push({ title: info.node.title, content: '', key: selectedKeys[0] as string });
     activeKey.value = selectedKeys[0] as string
-    text.value = `https://www.taixd.cn/view/${selectedKeys[0]}`
+    panes.value.push({ title: info.node.title, content: '', key: selectedKeys[0] as string });
+    QRCode.value = `https://www.taixd.cn/view/${selectedKeys[0]}`
     document.title = info.node.title
   }
 };
@@ -122,8 +102,7 @@ const removeTab = (targetKey: string) => {
   panes.value = panes.value.filter(pane => pane.key !== targetKey);
   if (panes.value.length === 0) {
     document.title = 'taixd'
-    activeKey.value = null
-    
+    activeKey.value = ''
   }
 };
 
@@ -141,10 +120,37 @@ const downloadChange = async () => {
   a.click();
   document.body.removeChild(a);
 };
-onMounted(() => {
-
+const openFileManager = () => {
+  fileManagerShow.value = true
+}
+watch(() => noteStore.markdownId, (newVal) => {
+  activeKey.value = newVal
+  const isSelect = panes.value.find((item) => {
+    return item.key === newVal
+  })
+  if (!isSelect) {
+    noteStore.noteTree.filter((item) => {
+      if (item.children) {
+        item.children.filter((child) => {
+          if (child.key === newVal) {
+            document.title = child.title
+            panes.value.push({ title: child.title, content: '', key: child.key });
+            QRCode.value = `https://www.taixd.cn/view/${child.key}`
+            activeKey.value = child.key
+          }
+        })
+      }
+    })
+    fileManagerShow.value = false
+    noteStore.markdownId = ''
+  }else{
+    message.error('文章已打开')
+  }
 })
+
+
 </script>
+
 <style scoped lang="scss">
 :deep(.ant-tree-switcher-line-icon) {
   display: none;
@@ -153,7 +159,8 @@ onMounted(() => {
 :deep(.ant-tree-switcher-noop) {
   display: none;
 }
-.btn-common{
-  @apply  m-l-1 m-t-1 m-b-1;
+
+.btn-common {
+  @apply m-l-1 m-t-1 m-b-1;
 }
 </style>

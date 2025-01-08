@@ -20,6 +20,7 @@
     "@bytemd/plugin-medium-zoom": "^1.21.0",
     "@bytemd/plugin-mermaid": "^1.21.0",
     "@bytemd/vue-next": "^1.21.0",
+    "@types/node": "^22.10.5",
     "@unocss/reset": "^0.65.2",
     "ant-design-vue": "^4",
     "axios": "^1.7.9",

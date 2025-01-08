@@ -16,8 +16,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits()
 const openEdit = () => {
-    console.log('编辑')
-    noteStore.markdownId = ''
+    console.log('编辑变之前',noteStore.markdownId)
     noteStore.markdownId = props.noteInfo.id 
+    console.log('编辑变之后',noteStore.markdownId)
 }
 </script>

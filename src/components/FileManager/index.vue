@@ -41,7 +41,7 @@ import { useNoteStore } from '@/store/note/index'
 import Markdown from '@/assets/icons/file_markdown.svg'
 import DirManager from './DirManager.vue'
 import NoteManager from './NoteManager.vue'
-import NoteInfo from './noteInfo.vue'
+import NoteInfo from './NoteInfo.vue'
 
 const noteStore = useNoteStore()
 const breadcrumb = ref<{

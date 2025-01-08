@@ -26,6 +26,7 @@
     "bytemd": "^1.21.0",
     "commitizen": "^4.3.1",
     "dayjs": "^1.11.13",
+    "echarts": "^5.6.0",
     "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.11.0",
     "pinia": "^2.3.0",

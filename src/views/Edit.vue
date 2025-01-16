@@ -4,9 +4,9 @@
       <div class="flex items-center m-r-2">
         <a-button class="btn-common" @click="toggleSidebar">收起</a-button>
         <a-button class="btn-common" @click="openFileManager">
-          文件管理器
+          <Library class="icon-common" />
         </a-button>
-        <a-button class="btn-common">设置</a-button>
+        <a-button class="btn-common"><Setting class="icon-common"/></a-button>
       </div>
       <div class="p-2 min-w-50 b-t">
         <a-tree
@@ -54,7 +54,7 @@
         </a-tab-pane>
         <template #leftExtra>
           <a-button v-if="!showSidebar" @click="toggleSidebar" class="m-1">
-            <Icon class="icon-common" />
+            <Library class="icon-common" />
           </a-button>
         </template>
         <template #rightExtra>
@@ -92,7 +92,7 @@
       <Editor :id="activeKey" v-if="activeKey" />
       <div v-if="!activeKey">请选择一篇文章打开</div>
     </div>
-    <a-modal v-model:open="fileManagerShow" width="1024px">
+    <a-modal v-model:open="fileManagerShow" width="1024px"   :destroyOnClose="true" :footer="false">
       <FileManager />
     </a-modal>
   </div>
@@ -100,8 +100,10 @@
 <script setup lang="ts">
 import Editor from "@/components/Editor.vue";
 import FileManager from "@/components/FileManager/index.vue";
-import Icon from "@/assets/icons/library.svg";
+import Library from "@/assets/icons/library.svg";
+import Setting from '@/assets/icons/setting.svg'
 import Markdown from "@/assets/icons/file_markdown.svg";
+import File_manager from "@/assets/icons/filecover.svg";
 import Dir from "@/assets/icons/dir.svg";
 import { ref, onMounted, watch } from "vue";
 import { useNoteStore } from "@/store/note/index";

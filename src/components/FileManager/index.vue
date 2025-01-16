@@ -1,14 +1,12 @@
 <template>
     <div>
-        <div class="m-b-2">文件管理器</div>
+        <div class="">文件管理器</div>
         <div>
             <a-input v-model:value="searchValue" placeholder="请输入关键字检索" @search="searchKeyWorld" />
         </div>
-        <div class="flex m-2">
-            <div>
-                <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width: 256px"
+        <div class="flex m-t-2 m-b-2 border-1">
+            <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width: 256px"
                     mode="vertical" :items="items" @click="handleClick" />
-            </div>
             <div class="p-4">
                 <div class="m-t-1">
                     <a-breadcrumb>
@@ -49,8 +47,11 @@ const breadcrumb = ref<{
 }>(
     {
         lib: '',
+        libId: '',
         dir: '',
+        dirId:'',
         note: '',
+        noteId:'',
     }
 )
 const searchValue = ref('')
@@ -166,3 +167,5 @@ const openNote = (id :string | number)=>{
     }
 }
 </script>
+<style>
+</style>

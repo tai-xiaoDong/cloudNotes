@@ -1,11 +1,18 @@
 <template>
-    <div v-for="(item,key) in props.noteList" :key="key" class="b-1 m-t-4  border-#f3f3f3  border-rd-2 m-l-4">
-        <div class="flex-col-center flex-1" @contextmenu="(e) => { right(e, 'type', 'id') }" @click="selectNote(item.id)">
-            <div>
-                <Markdown class="h-10 w-10" />
+    <div v-for="(item, key) in props.noteList" :key="key" class="b-1 m-t-4  border-#f3f3f3  border-rd-2 m-l-4">
+        <a-popover trigger="contextmenu" placement="right">
+            <template #content>
+                <p>重命名</p>
+                <p>删除</p>
+                <p>搜藏</p>
+            </template>
+            <div class="flex-col-center flex-1" @click="selectNote(item.id)">
+                <div>
+                    <Markdown class="h-10 w-10" />
+                </div>
+                <div>{{ item.title }}</div>
             </div>
-            <div>{{item.title}}</div>
-        </div>
+        </a-popover>
     </div>
 </template>
 <script lang="ts" setup>
@@ -20,11 +27,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits()
 const selectNote = (id: string) => {
-    console.log(id,'dirid')
+    console.log(id, 'dirid')
     emit('openNote', id)
 }
-const right = (e: MouseEvent, type: string, id: string | number) => {
-    e.preventDefault()
-    console.log(e, type, id, '右击了')
-}
+
 </script>

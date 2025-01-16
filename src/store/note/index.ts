@@ -39,6 +39,8 @@ export const useNoteStore = defineStore("noteStrore", () => {
       ],
     },
   ];
+  const allLib = []
+  const favorite = [] // 收藏夹
   const getNoteTree = async () => {
     let res = await getLibTree();
     console.log(res.data);

@@ -42,6 +42,7 @@ export default defineConfig({
     {
       'icon-common' : 'h-4 w-4',
       'flex-col-center':'flex flex-col flex-justify-center flex-items-center',
+      "flex-row-center": "flex flex-row flex-justify-center flex-items-center",
     },
     // ['flex-col-center', 'flex flex-col flex-justify-center flex-items-center']
   ],
